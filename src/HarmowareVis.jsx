@@ -5,13 +5,17 @@ import Controller from './Controller';
 
 
 //const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN ? process.env.REACT_APP_MAPBOX_TOKEN : "";
-const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrODV5cWRrbDBiYmkzbW83MHB0OXR2YWsifQ.DsQnn_9ZQY8-wp0elf-Yhw'
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrcmJybGN4dDBlcXYyb3BldDZoeWVyYW4ifQ.oTpS9j7y2COY6qvbPuCiWQ'
 
 const depotsdata = [  // line source & target
     {
         "position": [136.978052, 35.152912, 0], // line start position (long,Lati,height)
     },
 ]
+
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 const linedata = [  // line source & target
     {
@@ -38,17 +42,26 @@ const linedata = [  // line source & target
     },
 ]
 
+/*const mockMovesData = [{
+    "departuretime": 1626754053, "arrivaltime": 1626754152, "operation": [
+        { "elapsedtime": 1626754053, "position": [136.906372, 35.181454, 0], "direction": 0 },
+        { "elapsedtime": 1626754054, "position": [136.906387, 35.181454, 0], "direction": 89.99999567501865 },
+        { "elapsedtime": 1626754055, "position": [136.906403, 35.181454, 0], "direction": 89.9999953986329 }
+    ]
+}]*/
+
 const createMovesData = () => {
     const step = 100
     const moves_num = 100
     const time = Math.floor(new Date().getTime() / 1000)
+    console.log("time", new Date(time * 1000), new Date().getTime())
     const data = []
     for (let k = 0; k < moves_num; k++) {
         const operation = []
         for (let i = 0; i < step; i++) {
             operation.push({
                 elapsedtime: time + i,
-                position: [136.979052, 35.152912, 0],
+                position: [136.979352 + getRandomArbitrary(0.0001, 0.001), 35.152922 + getRandomArbitrary(0.0001, 0.001), 0],
                 color: [0, 255, 0],
             })
 
@@ -71,14 +84,14 @@ class Harmoware extends Container {
 }
 
 const HarmowarePage = (props) => {
-    const { actions, depotsData, viewport, movesbase, movedData, routePaths, clickedObject } = props
+    const { actions, viewport, movesbase, movedData, routePaths, clickedObject } = props
 
     useEffect(() => {
 
         console.log("ver1.1.2", process.env);
         const data = createMovesData()
         console.log("data", data)
-        actions.updateMovesBase(data);
+        actions.setMovesBase(data);
 
         if (actions) {
             actions.setViewport({
@@ -124,7 +137,7 @@ const HarmowarePage = (props) => {
                         //getRouteWidth: x => 1,
                         //optionCellSize: 2,
                         //sizeScale: 1,
-                        iconChange: false,
+                        iconChange: true,
                         //optionChange: false, // this.state.optionChange,
                         //onHover
                     })
@@ -133,39 +146,5 @@ const HarmowarePage = (props) => {
         </div>
     );
 }
-/*class Harmoware extends Container {
-    render() {
-        const { actions, depotsData, viewport, movesbase, clickedObject, routePaths } = this.props;
-        //console.log("test2", movesbase)
-        actions.updateMovesBase(createMovesData());
-        return (
-            <div className="harmovis_area">
-                <HarmoVisLayers
-                    viewport={viewport}
-                    actions={actions}
-                    mapboxApiAccessToken={MAPBOX_TOKEN}
-                    layers={[
-                        new LineMapLayer({
-                            data: linedata,
-                        }),
-                        new DepotsLayer({
-                            depotsData: depotsdata,
-                        }),
-                        new MovesLayer({
-                            movedData: movesbase,
-                            routePaths: routePaths,
-                            movesbase: createMovesData(),
-                            clickedObject: clickedObject,
-                            actions: actions,
-                            optionVisible: false,
-                            getRadius: x => 0.5,
-                            iconChange: false,
-                        })
-                    ]}
-                />
-            </div>
-        )
-    }
-}*/
 
 export default connectToHarmowareVis(Harmoware);

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { getCombinedReducer } from 'harmoware-vis';
 import 'harmoware-vis/scss/harmoware.scss';
+import './scss/visualize-sample.scss';
 
 const store = createStore(getCombinedReducer());
 
